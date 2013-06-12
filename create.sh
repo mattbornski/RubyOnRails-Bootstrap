@@ -1,5 +1,9 @@
 #!/bin/bash --login
 
+APP_NAME="Bootstrap"
+# Heroku likes using 1.9.1 at the moment
+RUBY_VERSION="1.9.1"
+
 cd $(dirname $0)
 
 # We want to use rvm to manage our Ruby versions and gems
@@ -19,10 +23,10 @@ rails new .
 # rvm --ruby-version --create version@gemset
 # Where version is the Ruby version string and gemset is the name of the gemset you want to use for this project.
 # Note that .rvmrc files can also be used for this purpose but are deprecated and are locked to only the RVM tool.
-rvm --ruby-version --create 1.9.3@${APP_NAME}
+rvm --ruby-version --create ${RUBY_VERSION}@${APP_NAME}
 
 # We'll be running locally and on Heroku; Heroku provides a postgresql database.
-echo -e "\ngem 'pg'\n" >> Gemfile
+cat Gemfile | sed 's/sqlite3/pg/g' | sponge Gemfile
 
 # Heroku recommends using unicorn as production web server
 echo -e "\ngem 'unicorn'\n" >> Gemfile
